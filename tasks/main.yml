@@ -1,18 +1,23 @@
 ---
 - name: Load OS-specific variables
-  include_vars: "{{ item }}"
-  with_first_found:
-    - ../vars/{{ ansible_distribution }}.yml
-    - ../vars/{{ ansible_os_family }}.yml
+  ansible.builtin.include_vars:
+    file: "{{ lookup('ansible.builtin.first_found', lldpd_first_found) }}"
+  vars:
+    lldpd_first_found:
+      files:
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      paths:
+        - "{{ role_path }}/vars"
 
 - name: Install lldpd
-  package:
+  ansible.builtin.package:
     name: lldpd
     state: present
 
-- name: configure lldpd
-  lineinfile:
+- name: Configure lldpd
+  ansible.builtin.lineinfile:
     path: "{{ lldpd_settings_file }}"
     regexp: "{{ lldpd_settings_var }}"
     line: '{{ lldpd_settings_var }}="{{ lldpd_args }}"'
-  notify: restart lldpd
+  notify: Restart lldpd

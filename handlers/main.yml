@@ -1,7 +1,7 @@
 ---
-# handlers file for ansible-role-smartd
+# Handlers for lldpd.
 
- - name: restart lldpd
-   service:
-     name: lldpd
-     state: restarted
+- name: Restart lldpd
+  ansible.builtin.service:
+    name: lldpd
+    state: restarted
